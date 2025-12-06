@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Download OpenReview papers by decision."
 readme = "README.md"
 authors = [
-  { name = "Miroslav Lzicar", email = "lzicar2000gmail.com" },
+  { name = "Miroslav Lzicar", email = "lzicar2000@gmail.com" },
 ]
 license = { text = "Apache-2.0" }
 keywords = ["neurips", "openreview", "papers", "automation"]
