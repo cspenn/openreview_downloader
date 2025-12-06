@@ -3,7 +3,7 @@ requires = ["hatchling>=1.24"]
 build-backend = "hatchling.build"
 
 [project]
-name = "neurips_downloader"
+name = "openreview_downloader"
 version = "0.1.1"
 description = "Download OpenReview papers by decision."
 readme = "README.md"
@@ -11,7 +11,7 @@ authors = [
   { name = "Miroslav Lzicar", email = "lzicar2000@gmail.com" },
 ]
 license = { text = "Apache-2.0" }
-keywords = ["neurips", "openreview", "papers", "automation"]
+keywords = ["neurips", "iclr", "icml", "openreview", "papers", "automation", "downloader", "scraping"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
@@ -35,19 +35,19 @@ dev = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/mireklzicar/neurips_downloader"
-"Repository" = "https://github.com/mireklzicar/neurips_downloader"
-"Issues" = "https://github.com/mireklzicar/neurips_downloader/issues"
+"Homepage" = "https://github.com/mireklzicar/openreview_downloader"
+"Repository" = "https://github.com/mireklzicar/openreview_downloader"
+"Issues" = "https://github.com/mireklzicar/openreview_downloader/issues"
 
 [project.scripts]
-neurips = "neurips_downloader.cli:main"
+ordl = "openreview_downloader.cli:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["neurips_downloader"]
+packages = ["openreview_downloader"]
 
 [tool.hatch.build.targets.sdist]
 include = [
-  "neurips_downloader",
+  "openreview_downloader",
   "LICENSE",
   "README.md",
   "main.py",
