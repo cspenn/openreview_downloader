@@ -7,7 +7,7 @@ Despite the name, this works for **any** OpenReview-hosted conference (NeurIPS, 
 ## Install
 
 ```bash
-pip install neurips-downloader
+pip install neurips_downloader
 ```
 
 ## Use
