@@ -1,0 +1,37 @@
+[MASTER]
+ignore=CVS
+ignore-patterns=
+persistent=yes
+load-plugins=
+jobs=1
+unsafe-load-any-extension=no
+
+[MESSAGES CONTROL]
+disable=
+    line-too-long,
+    too-many-locals,
+    too-many-instance-attributes,
+    too-few-public-methods,
+    broad-exception-caught,
+    no-name-in-module,
+    no-member,
+    import-outside-toplevel,
+    duplicate-code,
+    unused-argument,
+    attribute-defined-outside-init,
+    missing-class-docstring,
+    missing-function-docstring,
+    missing-module-docstring
+
+[REPORTS]
+output-format=text
+reports=no
+evaluation=10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10)
+
+[BASIC]
+good-names=i,j,k,ex,Run,_,id,note,note_id,pdf_path,rid,aid
+
+[TYPECHECK]
+ignored-modules=PySide6,openreview
+# List of members which are set dynamically and missed by pylint static analysis
+generated-members=pydantic.*,pydantic_core.*

@@ -23,15 +23,51 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 dependencies = [
   "openreview-py>=1.54.2,<2.0.0",
   "tqdm>=4.67.0,<5.0.0",
+  "PySide6>=6.6.0",
+  "SQLAlchemy>=2.0.0",
+  "alembic>=1.13.0",
+  "pydantic>=2.5.0",
+  "PyYAML>=6.0.0",
+  "httpx>=0.25.0",
+  "tenacity>=8.2.0",
 ]
 
 [project.optional-dependencies]
 dev = [
   "bump2version",
+  "ruff",
+  "mypy",
+  "pylint",
+  "autopep8",
+  "semgrep",
+  "radon",
+  "refurb",
+  "pytest",
+  "pytest-cov",
+  "docformatter",
+  "cohesion",
+  "instructor",
+  "pandera",
+  "wily",
+  "hypothesis",
+  "mutmut",
+  "py-spy",
+  "sqlfluff",
+  "jinja2",
+  "deptry",
+  "interrogate",
+  "pydeps",
+  "rope",
+  "bandit",
+  "xenon",
+  "grimp",
+  "pip-audit",
+  "types-PyYAML",
+  "types-tqdm",
 ]
 
 [project.urls]
@@ -41,9 +77,10 @@ dev = [
 
 [project.scripts]
 ordl = "openreview_downloader.cli:main"
+ordl-ui = "openreview_downloader.ui:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["openreview_downloader"]
+packages = ["src/openreview_downloader"]
 
 [tool.hatch.build.targets.sdist]
 include = [
@@ -51,4 +88,9 @@ include = [
   "LICENSE",
   "README.md",
   "main.py",
+]
+
+[dependency-groups]
+dev = [
+    "semgrep>=1.0.0",
 ]
