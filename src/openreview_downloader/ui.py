@@ -169,27 +169,22 @@ class SearchWorker(QThread):
         session_factory = get_session_factory(engine)
 
         with session_factory() as session:
-            if self.mode == "fuzzy":
-                # Use FTS5 trigram search
-                # We search in the virtual table papers_fts
-                sql = """
-                SELECT p.id, p.title, p.pdf_path 
-                FROM papers p
-                JOIN papers_fts f ON p.id = f.rowid
-                WHERE papers_fts MATCH :query
-                ORDER BY rank
-                """
-                # For trigram, we might want to wrap the query or use a specific syntax
-                # but FTS5 MATCH usually works well with simple terms.
-                res = session.execute(text(sql), {"query": self.query}).fetchall()
-            else:
-                # Exact/Like search
-                res = (
-                    session.query(Paper)
-                    .filter(Paper.title.ilike(f"%{self.query}%"))
-                    .all()
-                )
-                res = [(p.id, p.title, p.pdf_path) for p in res]
+            # Comprehensive search across papers and authors
+            # Both modes use LIKE for consistent behavior across all fields
+            sql = """
+            SELECT DISTINCT p.id, p.title, p.pdf_path
+            FROM papers p
+            LEFT JOIN paper_authors pa ON p.id = pa.paper_id
+            LEFT JOIN authors a ON pa.author_id = a.id
+            WHERE p.title LIKE :query
+               OR p.abstract LIKE :query
+               OR p.keywords LIKE :query
+               OR a.name LIKE :query
+               OR a.affiliation LIKE :query
+            ORDER BY p.title
+            """
+            like_query = f"%{self.query}%"
+            res = session.execute(text(sql), {"query": like_query}).fetchall()
 
             self.results.emit(res)
 
