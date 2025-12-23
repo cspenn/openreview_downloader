@@ -3,9 +3,9 @@
 
 # OpenReview Paper Downloader
 
-Simple download of all oral, spotlight, accepted, or rejected papers from OpenReview into tidy folders by decision.
+Download and manage papers from OpenReview-hosted conferences (NeurIPS, ICLR, ICML, etc.) organized by decision type.
 
-Despite the name, this works for **any** OpenReview-hosted conference (NeurIPS, ICLR, ICML, etc.).
+Features both a command-line interface and a graphical user interface with paper tracking via SQLite database.
 
 ## Installation
 
@@ -13,17 +13,15 @@ Despite the name, this works for **any** OpenReview-hosted conference (NeurIPS, 
 pip install openreview_downloader
 ```
 
-## Usage
+For GUI support, install with PySide6:
 
-The CLI saves PDFs into `downloads/<venue>/<decision>/` with sanitized filenames.
+```bash
+pip install openreview_downloader[gui]
+```
 
-**Available decisions:**
-- `oral` – Oral presentations
-- `spotlight` – Spotlight presentations
-- `accepted` – All accepted papers
-- `rejected` – Rejected papers
+## Quick Start
 
-### Basic examples (NeurIPS)
+### Command Line
 
 Download all NeurIPS oral papers:
 
@@ -31,28 +29,10 @@ Download all NeurIPS oral papers:
 ordl oral --venue-id NeurIPS.cc/2025/Conference
 ```
 
-Download Output:
-
-```
-downloads
-└── neurips2025
-    └── oral
-        ├── 27970_Deep_Compositional_Phase_Diffusion.pdf
-        ...
-        └── 28928_Generalized_Linear_Mode_Connectivity.pdf
-```
-
-
-Download all NeurIPS oral and spotlight papers:
+Download multiple decision types:
 
 ```bash
 ordl oral,spotlight --venue-id NeurIPS.cc/2025/Conference
-```
-
-Download all accepted NeurIPS papers (any presentation type):
-
-```bash
-ordl accepted --venue-id NeurIPS.cc/2025/Conference
 ```
 
 See decision counts without downloading:
@@ -61,49 +41,95 @@ See decision counts without downloading:
 ordl --info --venue-id NeurIPS.cc/2025/Conference
 ```
 
-Example output:
+### Graphical Interface
 
-```
-NeurIPS 2025
----
-Oral: 77
-Spotlight: 687
-Accepted: 5287
-Rejected: 255
-```
-
-### Other Conferences (ICLR, ICML, etc.)
-
-Just change the `--venue-id` to the appropriate OpenReview handle.
-
-**ICLR 2025 orals only:**
+Launch the GUI:
 
 ```bash
-ordl oral --venue-id ICLR.cc/2025/Conference
+ordl-gui
 ```
 
-**ICLR 2025 accepted papers (all formats):**
+The GUI provides:
+- Visual paper browsing and filtering
+- Download progress tracking
+- Paper database management
+- Dark/light theme support
 
-```bash
-ordl accepted --venue-id ICLR.cc/2025/Conference
+## Configuration
+
+### Config File (config.yml)
+
+```yaml
+venue_id: "NeurIPS.cc/2025/Conference"
+decisions:
+  - oral
+  - spotlight
+  - accepted
+out_dir: "downloads"
+db_path: "data/ordl.db"
+retry_attempts: 5
+retry_backoff_factor: 2.0
+theme: "dark"
 ```
 
-**ICML 2025 oral + spotlight:**
+### Credentials (credentials.yml)
 
-```bash
-ordl oral,spotlight --venue-id ICML.cc/2025/Conference
+For authenticated access to OpenReview:
+
+```yaml
+username: "your_username"
+password: "your_password"
 ```
 
-You can use any other OpenReview venue ID in the same way.
+Copy `credentials.yml.dist` to `credentials.yml` and fill in your credentials.
 
+Alternatively, use environment variables:
+- `OPENREVIEW_USERNAME`
+- `OPENREVIEW_PASSWORD`
 
-### CLI Options
+## CLI Reference
 
-- **`DECISIONS`** (positional) – Comma-separated list of decisions to download (`oral`, `spotlight`, `accepted`, `rejected`)
-- **`--venue-id`** – OpenReview venue ID (default: `NeurIPS.cc/2025/Conference` or env `VENUE_ID`)
-- **`--out-dir`** – Custom output directory (default: `downloads/<venue>/`)
-- **`--no-skip-existing`** – Re-download even if the PDF is already present
-- **`--info`** – Print decision counts for the venue and exit
+**Available decisions:**
+- `oral` - Oral presentations
+- `spotlight` - Spotlight presentations
+- `accepted` - All accepted papers
+- `rejected` - Rejected papers
+
+**Options:**
+- `DECISIONS` (positional) - Comma-separated list of decisions to download
+- `--venue-id` - OpenReview venue ID (default: `NeurIPS.cc/2025/Conference` or env `VENUE_ID`)
+- `--out-dir` - Custom output directory (default: `downloads/<venue>/`)
+- `--no-skip-existing` - Re-download even if the PDF already exists
+- `--info` - Print decision counts and exit
+
+## Output Structure
+
+```
+downloads/
+└── neurips2025/
+    ├── oral/
+    │   ├── 27970_Deep_Compositional_Phase_Diffusion.pdf
+    │   └── ...
+    ├── spotlight/
+    │   └── ...
+    └── accepted/
+        └── ...
+```
+
+## Architecture
+
+The project uses a modular architecture:
+
+```
+src/openreview_downloader/
+├── cli.py          # Command-line interface
+├── cli_utils.py    # CLI helper functions
+├── config.py       # YAML configuration loader
+├── database.py     # SQLAlchemy database setup
+├── models.py       # Paper data models
+├── services.py     # OpenReview API & download services
+└── ui.py           # PySide6 graphical interface
+```
 
 ## Development
 
@@ -111,6 +137,18 @@ Install in editable mode with development dependencies:
 
 ```bash
 pip install -e '.[dev]'
+```
+
+Run linting:
+
+```bash
+pylint src/openreview_downloader
+```
+
+Run tests:
+
+```bash
+pytest
 ```
 
 ## License
